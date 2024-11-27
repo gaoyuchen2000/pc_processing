@@ -23,9 +23,11 @@ A simple converter to process depth images captured by multiple cameras, convert
 - `u, v`: Pixel coordinates in the image.
 - `Z`: Depth value at the pixel.
 ### 3. World Coordinate Transformation
-- Each camera's position and orientation in the world coordinate system is defined using **extrinsic parameters**:
-- **Rotation Matrix (\(R_{\text{relative}}\))**: Defines the camera's orientation relative to the initial position.
-- **Translation Vector (\(t_{\text{cam\_in\_world}}\))**: Defines the camera's position in the world coordinate system.
+Each camera's position and orientation in the world coordinate system is defined using extrinsic parameters:
+
+- **Rotation Matrix (`R_relative`)**: Defines the camera's orientation relative to the initial position.
+- **Translation Vector (`t_cam_in_world`)**: Defines the camera's position in the world coordinate system.
+
 - Transformation matrices are constructed:
 - From world to camera:
   ```
