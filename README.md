@@ -13,17 +13,15 @@ A simple converter to process depth images captured by multiple cameras, convert
 - These images are stored in `.npy` format for efficient numerical processing.
 
 ### 2. Point Cloud Generation
-- Depth images are converted into 3D points in the **camera coordinate system** using the intrinsic parameters of each camera:
-
-  \[
-  X = \frac{(u - c_x) \cdot Z}{f_x}, \quad
-  Y = \frac{(v - c_y) \cdot Z}{f_y}, \quad
-  Z = \text{depth}(u, v)
-  \]
-
-- \(f_x, f_y, c_x, c_y\): Focal lengths and principal points from the camera's intrinsic parameters.
-- \(u, v\): Pixel coordinates in the image.
-- \(Z\): Depth value at the pixel.
+- Depth images are converted into 3D points in the **camera coordinate system** using the intrinsic parameters of each camera
+```
+  X = ((u - c_x) * Z) / f_x
+  Y = ((v - c_y) * Z) / f_y
+  Z = depth(u, v)
+  ```
+- `f_x, f_y, c_x, c_y`: Focal lengths and principal points from the camera's intrinsic parameters.
+- `u, v`: Pixel coordinates in the image.
+- `Z`: Depth value at the pixel.
 ### 3. World Coordinate Transformation
 - Each camera's position and orientation in the world coordinate system is defined using **extrinsic parameters**:
 - **Rotation Matrix (\(R_{\text{relative}}\))**: Defines the camera's orientation relative to the initial position.
