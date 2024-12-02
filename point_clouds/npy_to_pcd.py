@@ -4,7 +4,7 @@ import os
 import cv2
 import re
 
-def depth_to_point_cloud(depth_image, rgb_image, fx, fy, cx, cy, min_depth=0.1, max_depth=0.8):
+def depth_to_point_cloud(depth_image, rgb_image, fx, fy, cx, cy, min_depth=-0.4, max_depth=1.2):
 
     height, width = depth_image.shape
 
@@ -18,7 +18,7 @@ def depth_to_point_cloud(depth_image, rgb_image, fx, fy, cx, cy, min_depth=0.1, 
     u = u[valid]
     v = v[valid]
     Z = Z[valid]
-    X = (u - cx) * Z / fx
+    X = (cx - u) * Z / fx
     Y = -(v - cy) * Z / fy#############################why minus?
     points = np.stack((X, Y, Z), axis=-1)
     colors = rgb_image[v, u] / 255.0  # 归一化到 [0, 1]
@@ -63,7 +63,7 @@ def load_images_and_convert_to_point_clouds(depth_folder, rgb_folder, output_fol
     for depth_file, params in zip(depth_files, camera_params):
 
         depth_image_path = os.path.join(depth_folder, depth_file)
-        depth_image_uint16 = cv2.imread(depth_image_path, cv2.IMREAD_UNCHANGED)
+        depth_image_uint16 = cv2.imread(depth_image_path, -1)
         if depth_image_uint16 is None:
             print(f"Failed to load depth image: {depth_file}")
             continue
@@ -81,15 +81,9 @@ def load_images_and_convert_to_point_clouds(depth_folder, rgb_folder, output_fol
 
         rgb_image = cv2.imread(rgb_image_path)
         rgb_image = cv2.cvtColor(rgb_image, cv2.COLOR_BGR2RGB)
-        rgb_image=cv2.flip(rgb_image,1)##########################################zhuyizheli!!!!!!!!!!!!!!!!!!!!!!
+        #rgb_image=cv2.flip(rgb_image,1)##########################################zhuyizheli!!!!!!!!!!!!!!!!!!!!!!
         print(f"Loaded RGB image: {rgb_file}, shape: {rgb_image.shape}")
-
-
-        if depth_image.shape != rgb_image.shape[:2]:
-            print(f"Resizing RGB image to match depth image dimensions.")
-            rgb_image = cv2.resize(rgb_image, (depth_image.shape[1], depth_image.shape[0]))
-
-
+ 
         fx, fy, cx, cy = params["intrinsics"]
         extrinsics = params["extrinsics"]
         full_transform = compute_full_transform(align_matrix, extrinsics)
